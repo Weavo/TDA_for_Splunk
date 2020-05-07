@@ -1,0 +1,19 @@
+<nav search_view="search" color="#FF7A33">
+
+  <view name="strava_config" default="true" />
+
+  <view name="overview" />
+
+  <collection label="Cycling">
+   <view source="all" match="ride" />
+  </collection>
+
+  <view name="run" />
+  <view name="hike" />
+  <view name="search" />
+
+  <collection label="Links">
+   <a href="http://www.strava.com" target="_blank">Strava</a>
+  </collection>
+
+</nav>

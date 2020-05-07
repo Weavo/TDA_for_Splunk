@@ -1,0 +1,54 @@
+html {
+  background-color: #31373E;
+}
+
+input[type=password], input[type=text] {
+  background-color: rgb(92, 103, 115);
+  border-color: rgb(43, 48, 51);
+  color: white;
+}
+
+.dashboard-row .dashboard-panel {
+  color: white;
+  background: #31373e;
+  position: relative;
+}
+
+.dashboard-body {
+  background-color: #31373E;
+}
+
+h1 {
+  color: white;
+}
+
+button {
+  color: white;
+  background-color: #5cc05c;
+  padding: 6px 15px;
+  font-weight: 500;
+  border-radius: 3px;
+  font: 400 13.3333px Arial;
+  border: transparent;
+  transition-duration: 0.4s;
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,.1);
+}
+
+#postButton:hover {
+  color: white;
+  background-color: #399339;
+}
+
+.modal-header {
+  background-color: #399339;
+  color: white;
+  font-size: large;
+  font: Arial;
+  padding: 6px;
+}
+
+.modal-body {
+  color: black;
+  margin: 20px;
+}
+

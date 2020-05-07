@@ -1,0 +1,299 @@
+<form theme="dark">
+  <label>Running</label>
+  <search id="runData">
+    <query>index=strava type=Run | `$avgxph$` | `$gainx$` | `hours` | `$units$` | `$maxxph$` | table _time, $avgxph$, average_heartrate, hours, max_heartrate, $gainx$, kilojoules, $maxxph$, $units$</query>
+    <earliest>$time.earliest$</earliest>
+    <latest>$time.latest$</latest>
+  </search>
+  <fieldset submitButton="true">
+    <input type="dropdown" token="stravaUserFilter">
+      <label>User</label>
+      <choice value="*">All Users</choice>
+      <fieldForLabel>userInfo</fieldForLabel>
+      <fieldForValue>client_id</fieldForValue>
+      <search>
+        <query>| inputlookup strava_users_info | eval userInfo = firstname + " " + lastname + " : " + city + ", " + state + "    " + country | stats count BY client_id, userInfo | fields - count</query>
+        <earliest>$time.earliest$</earliest>
+        <latest>$time.latest$</latest>
+      </search>
+      <prefix>client_id="</prefix>
+      <suffix>"</suffix>
+      <change>
+        <set token="userInfo">$label$</set>
+      </change>
+    </input>
+    <input type="time" token="time">
+      <label>Time Picker</label>
+      <default>
+        <earliest>0</earliest>
+        <latest></latest>
+      </default>
+    </input>
+    <input type="dropdown" token="units">
+      <label>Units</label>
+      <choice value="miles">Imperial</choice>
+      <choice value="kilometers">Metric</choice>
+      <change>
+        <condition label="Imperial">
+          <unset token="units">kilometers</unset>
+          <set token="units">miles</set>
+          <set token="avgxph">avgmph</set>
+          <set token="maxxph">maxmph</set>
+          <set token="gainx">gainft</set>
+          <set token="label">Miles</set>
+          <set token="label2">Feet</set>
+        </condition>
+        <condition label="Metric">
+          <unset token="units">miles</unset>
+          <set token="units">kilometers</set>
+          <set token="avgxph">avgkph</set>
+          <set token="maxxph">maxkph</set>
+          <set token="gainx">gainmt</set>
+          <set token="label">Kilometers</set>
+          <set token="label2">Meters</set>
+        </condition>
+      </change>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Total Miles</title>
+      <single>
+        <search base="runData">
+          <query>stats sum($units$) as "Run Total $label$"</query>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Average Run ($label$)</title>
+      <single>
+        <search base="runData">
+          <query>timechart avg($units$) as "Average Run ($label$)"</query>
+        </search>
+        <option name="drilldown">none</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Longest Run ($label$)</title>
+      <single>
+        <search base="runData">
+          <query>stats max($units$) as "Longest Run ($label$)"</query>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Total Hours</title>
+      <single>
+        <search base="runData">
+          <query>stats sum(hours) AS "Hours"</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Average Speed ($label$/Hour)</title>
+      <single>
+        <search base="runData">
+          <query>stats avg($avgxph$) AS "Average Speed ($label$/Hour)"</query>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Max Speed ($label$/Hour)</title>
+      <single>
+        <search base="runData">
+          <query>stats max($maxxph$) AS "Max Speed ($label$/Hour)"</query>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Average Heart Rate (BPM)</title>
+      <single>
+        <search base="runData">
+          <query>stats avg(average_heartrate) AS "Average Heart Rate (BPM)"</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Max Heart Rate (BPM)</title>
+      <single>
+        <search base="runData">
+          <query>stats max(max_heartrate) AS "Max Heart Rate (BPM)"</query>
+        </search>
+        <option name="drilldown">none</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Max Elevation Gain ($label2$)</title>
+      <single>
+        <search base="runData">
+          <query>stats max($gainx$) AS "Total Evelation Gain ($label2$)"</query>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>$label$ Vs. Calories Over Time</title>
+      <chart>
+        <search base="runData">
+          <query>timechart span=1month sum($units$) AS "$label$", sum(kilojoules) as "Calories" | fillnull</query>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisLabelsY.majorUnit">25</option>
+        <option name="charting.axisTitleX.text">Month</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.text">Miles</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.maximumNumber">200</option>
+        <option name="charting.axisY.minimumNumber">0</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">1</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.overlayFields">Calories</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Average Vs. Max Heart Rate</title>
+      <chart>
+        <search base="runData">
+          <query>timechart avg(average_heartrate) AS "Average Heart Rate", max(max_heartrate) AS "Max Heart Rate" | fillnull value="N/A" "Average Heart Rate", "Max Heart Rate"</query>
+        </search>
+        <option name="charting.axisY.maximumNumber">200</option>
+        <option name="charting.axisY.minimumNumber">100</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <img src="/static/app/TDA_for_Splunk/images/api_logo_cptblWith_strava_horiz_light.png"/>
+        </center>
+      </html>
+    </panel>
+  </row>
+</form>

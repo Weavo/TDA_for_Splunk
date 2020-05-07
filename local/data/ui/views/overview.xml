@@ -1,0 +1,243 @@
+<form theme="dark">
+  <label>Overview</label>
+  <search id="overview">
+    <query>index=strava | `hours` | `$units$` | search $stravaUserFilter$ | table _time, hours, kilojoules, location, name, $units$, start_latitude, start_longitude, type</query>
+    <earliest>$time.earliest$</earliest>
+    <latest>$time.latest$</latest>
+  </search>
+  <fieldset submitButton="true">
+    <input type="dropdown" token="stravaUserFilter">
+      <label>User</label>
+      <choice value="*">All Users</choice>
+      <fieldForLabel>userInfo</fieldForLabel>
+      <fieldForValue>client_id</fieldForValue>
+      <search>
+        <query>| inputlookup strava_users_info | eval userInfo = firstname + " " + lastname + " : " + city + ", " + state + "    " + country | stats count BY client_id, userInfo | fields - count</query>
+        <earliest>$time.earliest$</earliest>
+        <latest>$time.latest$</latest>
+      </search>
+      <prefix>client_id="</prefix>
+      <suffix>"</suffix>
+      <change>
+        <set token="userInfo">$label$</set>
+      </change>
+    </input>
+    <input type="time" token="time">
+      <label>Time Picker</label>
+      <default>
+        <earliest>0</earliest>
+        <latest></latest>
+      </default>
+    </input>
+    <input type="dropdown" token="units">
+      <label>Units</label>
+      <choice value="miles">Imperial</choice>
+      <choice value="kilometers">Metric</choice>
+      <change>
+        <condition label="Imperial">
+          <unset token="units">kilometers</unset>
+          <set token="units">miles</set>
+          <set token="label">Miles</set>
+        </condition>
+        <condition label="Metric">
+          <unset token="units">miles</unset>
+          <set token="units">kilometers</set>
+          <set token="label">Kilometers</set>
+        </condition>
+      </change>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <html>
+        <h1>
+          <font color="FF7A33">Athlete</font> $userInfo$
+        </h1>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Total $label$</title>
+      <single>
+        <search base="overview">
+          <query>stats sum($units$) as "Total $label$"</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Total Hours</title>
+      <single>
+        <search base="overview">
+          <query>stats sum(hours) AS "Total Hours"</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Total Hours By Activity Type</title>
+      <chart>
+        <search base="overview">
+          <query>stats sum(hours) AS "Hours" BY type</query>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Total $label$ Over TIme</title>
+      <chart>
+        <search base="overview">
+          <query>timechart span=1month sum($units$) AS "$label$" BY type | fillnull</query>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.text">TIme</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">minmax</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Total Calories Burned Over TIme</title>
+      <chart>
+        <search base="overview">
+          <query>timechart span=1month sum(kilojoules) AS "Calories" BY type | fillnull</query>
+        </search>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Activity Locations</title>
+      <map>
+        <search>
+          <query>index=strava | geostats latfield=start_latitude longfield=start_longitude count by type</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="mapping.choroplethLayer.colorBins">5</option>
+        <option name="mapping.choroplethLayer.colorMode">auto</option>
+        <option name="mapping.choroplethLayer.maximumColor">0xaf575a</option>
+        <option name="mapping.choroplethLayer.minimumColor">0x62b3b2</option>
+        <option name="mapping.choroplethLayer.neutralPoint">0</option>
+        <option name="mapping.choroplethLayer.shapeOpacity">0.75</option>
+        <option name="mapping.choroplethLayer.showBorder">1</option>
+        <option name="mapping.data.maxClusters">100</option>
+        <option name="mapping.legend.placement">bottomright</option>
+        <option name="mapping.map.center">(0,0)</option>
+        <option name="mapping.map.panning">1</option>
+        <option name="mapping.map.scrollZoom">0</option>
+        <option name="mapping.map.zoom">2</option>
+        <option name="mapping.markerLayer.markerMaxSize">50</option>
+        <option name="mapping.markerLayer.markerMinSize">10</option>
+        <option name="mapping.markerLayer.markerOpacity">0.8</option>
+        <option name="mapping.showTiles">1</option>
+        <option name="mapping.tileLayer.maxZoom">7</option>
+        <option name="mapping.tileLayer.minZoom">0</option>
+        <option name="mapping.tileLayer.tileOpacity">1</option>
+        <option name="mapping.type">marker</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </map>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Top Activity Locations</title>
+      <table>
+        <search base="overview">
+          <query>rename location AS "Location", type AS "Activity Type" | stats count BY "Activity Type", "Location" | sort- count | rename count as "Activity Count"</query>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <img src="/static/app/TDA_for_Splunk/images/api_logo_cptblWith_strava_horiz_light.png"/>
+        </center>
+      </html>
+    </panel>
+  </row>
+</form>

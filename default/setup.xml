@@ -1,0 +1,13 @@
+<setup>
+<block title="Strava Authentication Credentials" endpoint="configs/inputs" entity="strava%3A%2F%2Factivities">
+  <input field="client_id">
+    <label>Client ID</label>
+    <type>text</type>
+  </input>
+
+  <input field="client_secret">
+    <label>Client Secret</label>
+    <type>password</type>
+  </input>
+</block>
+</setup>

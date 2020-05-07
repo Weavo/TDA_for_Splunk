@@ -1,0 +1,30 @@
+<dashboard script="javascript/strava_config.js" stylesheet="css/strava_config.css">
+  <label>Setup</label>
+  <row>
+    <panel>
+      <html>
+        <form id="userPOSTForm">
+          <div id="clientIdField">
+            <label for="client_id">Client ID</label>
+            <input type="text" name="client_id" id="client_id"/>
+          </div>
+          <div id="clientSecretField">
+            <label for="client_secret">Client Secret</label>
+            <input type="password" name="client_secret" id="client_secret"/>
+          </div>
+        </form>
+        <button id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#msgModal">Authorize</button>
+        <!-- Modal -->
+        <div id="msgModal" class="modal fade">
+         <div class="modal-header" id="headerContent" align="center">
+         </div>
+          <div class="modal-body" id="bodyContent">
+          </div>
+           <div class="modal-footer" id="footerContent">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+           </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+</dashboard>
