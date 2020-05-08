@@ -85,9 +85,11 @@
       <title>Average Run ($label$)</title>
       <single>
         <search base="runData">
-          <query>timechart avg($units$) as "Average Run ($label$)"</query>
+          <query>stats avg($units$) as "Average Run ($label$)"</query>
         </search>
         <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
       </single>
     </panel>
     <panel>

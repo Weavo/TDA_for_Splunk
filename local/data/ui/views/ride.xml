@@ -94,10 +94,12 @@
       <title>Average Ride ($label$)</title>
       <single>
         <search base="rideData">
-          <query>timechart avg($units$) as "Average Ride $label$"</query>
+          <query>stats avg($units$) as "Average Ride $label$"</query>
         </search>
         <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
         <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
       </single>
     </panel>
     <panel>
@@ -153,7 +155,7 @@
       <title>Max Speed ($label$/Hour)</title>
       <single>
         <search base="rideData">
-          <query>timechart max($maxxph$) AS "Max Speed ($label$/Hour)"</query>
+          <query>stats max($maxxph$) AS "Max Speed ($label$/Hour)"</query>
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
@@ -190,9 +192,10 @@
       <title>Average Heart Rate (BPM)</title>
       <single>
         <search base="rideData">
-          <query>timechart avg(average_heartrate) AS "Average Heart Rate (BPM)"</query>
+          <query>stats avg(average_heartrate) AS "Average Heart Rate (BPM)"</query>
         </search>
         <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
         <option name="refresh.display">progressbar</option>
       </single>
     </panel>
@@ -238,7 +241,7 @@
       <title>Average Cadence</title>
       <single>
         <search base="rideData">
-          <query>timechart avg(average_cadence) AS "Average Cadence" | fillnull value="N/A" "Average Cadence"</query>
+          <query>stats avg(average_cadence) AS "Average Cadence" | fillnull value="N/A" "Average Cadence"</query>
         </search>
         <option name="drilldown">none</option>
         <option name="refresh.display">progressbar</option>
@@ -250,7 +253,7 @@
       <title>Average Cadence Over Time</title>
       <chart>
         <search base="rideData">
-          <query>timechart span=1month avg(average_cadence) AS "Average Cadence" | fillnull</query>
+          <query>timechart avg(average_cadence) AS "Average Cadence" | fillnull</query>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
         <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>

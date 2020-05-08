@@ -85,10 +85,12 @@
       <title>Average Ride ($label$)</title>
       <single>
         <search base="virtualRideData">
-          <query>timechart avg($units$) as "Average Virtual Ride $label$"</query>
+          <query>stats avg($units$) as "Average Virtual Ride $label$"</query>
         </search>
         <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
         <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
       </single>
     </panel>
     <panel>
@@ -120,7 +122,7 @@
       <title>Average Ride Speed ($label$/Hour)</title>
       <single>
         <search base="virtualRideData">
-          <query>timechart avg($avgxph$) AS "Average Virtual Ride Speed ($label$/Hour)"</query>
+          <query>stats avg($avgxph$) AS "Average Virtual Ride Speed ($label$/Hour)"</query>
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
@@ -181,13 +183,14 @@
       <title>Average Heart Rate (BPM)</title>
       <single>
         <search base="virtualRideData">
-          <query>timechart avg(average_heartrate) AS "Average Virtual Ride Heart Rate (BPM)"</query>
+          <query>stats avg(average_heartrate) AS "Average Virtual Ride Heart Rate (BPM)"</query>
         </search>
         <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
         <option name="refresh.display">progressbar</option>
       </single>
     </panel>
-   <panel>
+    <panel>
       <title>Max Heart Rate (BPM)</title>
       <chart>
         <search base="virtualRideData">
@@ -228,7 +231,7 @@
       <title>Average Cadence</title>
       <single>
         <search base="virtualRideData">
-          <query>timechart avg(average_cadence) AS "Virtual Ride Average Cadence"</query>
+          <query>stats avg(average_cadence) AS "Virtual Ride Average Cadence"</query>
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">none</option>
@@ -255,7 +258,7 @@
       <title>Average Cadence Over Time</title>
       <chart>
         <search base="virtualRideData">
-          <query>rename average_cadence AS "Cadence" | table _time, Cadence</query>
+          <query>timechart avg(average_cadence) AS "Cadence"</query>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
         <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
@@ -278,7 +281,7 @@
         <option name="charting.chart.bubbleMaximumSize">50</option>
         <option name="charting.chart.bubbleMinimumSize">10</option>
         <option name="charting.chart.bubbleSizeBy">area</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.nullValueMode">zero</option>
         <option name="charting.chart.showDataLabels">none</option>
         <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
         <option name="charting.chart.stackMode">default</option>
@@ -290,6 +293,7 @@
         <option name="charting.legend.mode">standard</option>
         <option name="charting.legend.placement">right</option>
         <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
         <option name="trellis.enabled">0</option>
         <option name="trellis.scales.shared">1</option>
         <option name="trellis.size">medium</option>
