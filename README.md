@@ -159,7 +159,7 @@ Follow the instructions below on how to obtain your Strava API access credential
 1. **Application Name:** Trail Dust Analytics
 2. **Category:** Performance Analysis
 3. **Club:** leave blank
-4. **Website:** https://bitbucket.org/blah blah
+4. **Website:** https://github.com/Weavo/TDA_for_Splunk
 5. **Application Description:** Import your Strava data into Splunk and review it with a series of dashboards.
 6. **Authorization Callback Domain:** The callback domain refers to the domain in which your Splunk host resides. For example, if your domain is exmaple@traildustanalytics.com, the callback domain you need to provide to Strava would be traildustanalytics.com
 ---
