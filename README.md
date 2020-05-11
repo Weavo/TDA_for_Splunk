@@ -137,7 +137,7 @@ More detailed information on the  technical aspects of this app can be reviewed 
 
 #####  All-in-One Splunk Deployment
 
-1. [Download]() Trail Dust Analytics. 
+1. [Download](https://github.com/Weavo/TDA_for_Splunk/blob/master/TDA_for_Splunk.tar.gz) Trail Dust Analytics. 
 **NOTE:** The file downloads with a .tar.gz extension. Do not attempt to run this file.
 2. [Click here](https://docs.splunk.com/Documentation/AddOns/released/Overview/Singleserverinstall) for instructions on installing this app using Spunk Web. Disregard step one of Splunk's instructions  as you have already downloaded the app.
 3. Restart Splunk to complete the app installation.
